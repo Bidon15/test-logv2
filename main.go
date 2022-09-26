@@ -24,7 +24,13 @@ func test(runenv *runtime.RunEnv, initCtx *run.InitContext) error {
 	state := sync.State("ready")
 	seq := syncclient.MustSignalAndWait(ctx, state, runenv.TestInstanceCount)
 	var log = logging.Logger("test")
-
+	lvl, err := logging.LevelFromString("info")
+	if err != nil {
+		return err
+	}
+	logging.SetAllLoggers(lvl)
+	time.Sleep(1 * time.Second)
+	runenv.RecordMessage("I am seq %d", seq)
 	log.Infof("I am seq %d", seq)
 
 	runenv.RecordSuccess()
